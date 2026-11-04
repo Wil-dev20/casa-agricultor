@@ -25,12 +25,12 @@ struct Componente {
     Componente* siguiente;
 };
 
+// Punteros globales de las estructuras dinámicas
 Maquinaria* listaMaquinaria = NULL;
 Pedido* colaFrente = NULL;
 Componente* pilaAlmacen = NULL;
 
-int opcionGlobal;
-
+// Prototipos de funciones
 void menuGestorMaquinaria();
 void registrarNuevaMaquinaria();
 void eliminarMaquinaria();
@@ -51,6 +51,7 @@ void guardarEstadoSistema();
 void cargarEstadoSistema();
 
 int main() {
+    int opcionPrincipal; // Variable local para evitar el cierre accidental al volver de submenús
     cargarEstadoSistema();
     do {
         system("cls");
@@ -63,9 +64,9 @@ int main() {
         cout << "4. Guardar Estado del Sistema\n";
         cout << "5. Salir del Sistema\n";
         cout << "Ingrese una opcion: ";
-        cin >> opcionGlobal;
+        cin >> opcionPrincipal;
 
-        switch (opcionGlobal) {
+        switch (opcionPrincipal) {
             case 1: menuGestorMaquinaria(); break;
             case 2: menuPlanificadorProduccion(); break;
             case 3: menuGestorAlmacen(); break;
@@ -73,11 +74,12 @@ int main() {
             case 5: guardarEstadoSistema(); cout << "Saliendo...\n"; break;
             default: cout << "Opcion no valida.\n"; system("pause");
         }
-    } while (opcionGlobal != 5);
+    } while (opcionPrincipal != 5);
     return 0;
 }
 
 void menuGestorMaquinaria() {
+    int opcion;
     do {
         system("cls");
         cout << "--- GESTOR DE MAQUINARIA AGRICOLA ---\n";
@@ -87,15 +89,17 @@ void menuGestorMaquinaria() {
         cout << "4. Modificar prioridad\n";
         cout << "5. Volver\n";
         cout << "Seleccione: ";
-        cin >> opcionGlobal;
-        switch (opcionGlobal) {
+        cin >> opcion;
+        switch (opcion) {
             case 1: registrarNuevaMaquinaria(); break;
             case 2: eliminarMaquinaria(); break;
             case 3: buscarMaquinaria(); break;
             case 4: modificarPrioridadEnsamblaje(); break;
+            case 5: break;
+            default: cout << "Opcion no valida.\n"; break;
         }
-        if (opcionGlobal != 5) system("pause");
-    } while (opcionGlobal != 5);
+        if (opcion != 5) system("pause");
+    } while (opcion != 5);
 }
 
 void registrarNuevaMaquinaria() {
@@ -111,7 +115,10 @@ void registrarNuevaMaquinaria() {
 void eliminarMaquinaria() {
     int idEliminar;
     cout << "Ingrese ID a eliminar: "; cin >> idEliminar;
-    if (listaMaquinaria == NULL) { cout << "Lista vacia.\n"; return; }
+    if (listaMaquinaria == NULL) { 
+        cout << "Lista vacia.\n"; 
+        return; 
+    }
     
     Maquinaria* aux = listaMaquinaria;
     Maquinaria* ant = NULL;
@@ -121,7 +128,10 @@ void eliminarMaquinaria() {
         aux = aux->siguiente;
     }
     
-    if (aux == NULL) { cout << "No encontrado.\n"; return; }
+    if (aux == NULL) { 
+        cout << "No encontrado.\n"; 
+        return; 
+    }
     
     if (ant == NULL) listaMaquinaria = listaMaquinaria->siguiente;
     else ant->siguiente = aux->siguiente;
@@ -160,6 +170,7 @@ void modificarPrioridadEnsamblaje() {
 }
 
 void menuPlanificadorProduccion() {
+    int opcion;
     do {
         system("cls");
         cout << "--- PLANIFICADOR DE PRODUCCION ---\n";
@@ -168,14 +179,16 @@ void menuPlanificadorProduccion() {
         cout << "3. Visualizar cola\n";
         cout << "4. Volver\n";
         cout << "Seleccione: ";
-        cin >> opcionGlobal;
-        switch (opcionGlobal) {
+        cin >> opcion;
+        switch (opcion) {
             case 1: encolarPedidoSegunPrioridad(); break;
             case 2: desencolarYEjecutarProduccion(); break;
             case 3: visualizarColaProduccion(); break;
+            case 4: break;
+            default: cout << "Opcion no valida.\n"; break;
         }
-        if (opcionGlobal != 4) system("pause");
-    } while (opcionGlobal != 4);
+        if (opcion != 4) system("pause");
+    } while (opcion != 4);
 }
 
 void encolarPedidoSegunPrioridad() {
@@ -200,7 +213,10 @@ void encolarPedidoSegunPrioridad() {
 }
 
 void desencolarYEjecutarProduccion() {
-    if (colaFrente == NULL) { cout << "No hay pedidos en cola.\n"; return; }
+    if (colaFrente == NULL) { 
+        cout << "No hay pedidos en cola.\n"; 
+        return; 
+    }
     Pedido* aux = colaFrente;
     colaFrente = colaFrente->siguiente;
     cout << "Procesando pedido ID: " << aux->id << " Modelo: " << aux->modelo << "\n";
@@ -208,7 +224,10 @@ void desencolarYEjecutarProduccion() {
 }
 
 void visualizarColaProduccion() {
-    if (colaFrente == NULL) { cout << "Cola vacia.\n"; return; }
+    if (colaFrente == NULL) { 
+        cout << "Cola vacia.\n"; 
+        return; 
+    }
     Pedido* aux = colaFrente;
     cout << "Cola de produccion actual:\n";
     while (aux != NULL) {
@@ -218,6 +237,7 @@ void visualizarColaProduccion() {
 }
 
 void menuGestorAlmacen() {
+    int opcion;
     do {
         system("cls");
         cout << "--- GESTOR DE ALMACEN ---\n";
@@ -226,14 +246,16 @@ void menuGestorAlmacen() {
         cout << "3. Ver estado\n";
         cout << "4. Volver\n";
         cout << "Seleccione: ";
-        cin >> opcionGlobal;
-        switch (opcionGlobal) {
+        cin >> opcion;
+        switch (opcion) {
             case 1: asignarComponenteMemoria(); break;
             case 2: liberarComponenteMemoria(); break;
             case 3: verificarEstadoAlmacen(); break;
+            case 4: break;
+            default: cout << "Opcion no valida.\n"; break;
         }
-        if (opcionGlobal != 4) system("pause");
-    } while (opcionGlobal != 4);
+        if (opcion != 4) system("pause");
+    } while (opcion != 4);
 }
 
 void asignarComponenteMemoria() {
@@ -246,7 +268,10 @@ void asignarComponenteMemoria() {
 }
 
 void liberarComponenteMemoria() {
-    if (pilaAlmacen == NULL) { cout << "Almacen vacio.\n"; return; }
+    if (pilaAlmacen == NULL) { 
+        cout << "Almacen vacio.\n"; 
+        return; 
+    }
     Componente* aux = pilaAlmacen;
     pilaAlmacen = pilaAlmacen->siguiente;
     cout << "Componente liberado: " << aux->pieza << "\n";
@@ -254,7 +279,10 @@ void liberarComponenteMemoria() {
 }
 
 void verificarEstadoAlmacen() {
-    if (pilaAlmacen == NULL) { cout << "Almacen vacio.\n"; return; }
+    if (pilaAlmacen == NULL) { 
+        cout << "Almacen vacio.\n"; 
+        return; 
+    }
     Componente* aux = pilaAlmacen;
     cout << "Estado actual del almacen (Tope a Base):\n";
     while (aux != NULL) {
@@ -267,7 +295,7 @@ void guardarEstadoSistema() {
     ofstream archivo("datos_sistema.txt");
     if (archivo.is_open()) {
         Maquinaria* aux = listaMaquinaria;
-        while(aux != NULL){
+        while (aux != NULL) {
             archivo << "M " << aux->id << " " << aux->nombre << " " << aux->prioridad << "\n";
             aux = aux->siguiente;
         }
@@ -279,11 +307,15 @@ void guardarEstadoSistema() {
 void cargarEstadoSistema() {
     ifstream archivo("datos_sistema.txt");
     if (archivo.is_open()) {
-        char tipo; int id, prio; string nom;
-        while(archivo >> tipo >> id >> nom >> prio) {
+        char tipo; 
+        int id, prio; 
+        string nom;
+        while (archivo >> tipo >> id >> nom >> prio) {
             if (tipo == 'M') {
                 Maquinaria* nuevo = new Maquinaria();
-                nuevo->id = id; nuevo->nombre = nom; nuevo->prioridad = prio;
+                nuevo->id = id; 
+                nuevo->nombre = nom; 
+                nuevo->prioridad = prio;
                 nuevo->siguiente = listaMaquinaria;
                 listaMaquinaria = nuevo;
             }
